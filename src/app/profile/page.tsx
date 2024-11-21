@@ -1,7 +1,7 @@
 'use client';
 
 import { useAuth } from '@/context/AuthContext';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { redirect } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -39,7 +39,7 @@ export default function ProfilePage() {
     }
   }, [user]);
 
-  const fetchWishlist = async () => {
+  const fetchWishlist = useCallback(async () => {
     try {
       const response = await fetch('/api/wishlist', {
         headers: {
@@ -51,7 +51,7 @@ export default function ProfilePage() {
     } catch (error) {
       console.error('Error fetching wishlist:', error);
     }
-  };
+  }, [user]);
 
   const removeFromWishlist = async (productId: string) => {
     try {

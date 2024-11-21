@@ -3,7 +3,7 @@
 import { Heart, ShoppingCart, User, Home, Zap, ArrowUpDown } from 'lucide-react'
 import Image from "next/image"
 import Link from "next/link"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { toast } from 'react-hot-toast';
 
 import { Button } from "@/components/ui/button"
@@ -73,7 +73,7 @@ export default function Component() {
     }
   }, [user]);
 
-  const fetchWishlistItems = async () => {
+  const fetchWishlistItems = useCallback(async () => {
     try {
       const response = await fetch('/api/wishlist', {
         headers: {
@@ -85,7 +85,7 @@ export default function Component() {
     } catch (error) {
       console.error('Error fetching wishlist:', error);
     }
-  };
+  }, [user]);
 
   const handleWishlist = async (product: WishlistProduct) => {
     if (!user) {
