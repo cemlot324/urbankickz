@@ -16,7 +16,7 @@ const s3Client = new S3Client({
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
     await dbConnect()
@@ -51,7 +51,7 @@ export async function PUT(
     const allImages = [...existingImages, ...newImageUrls]
 
     const updatedProduct = await Product.findByIdAndUpdate(
-      params.id,
+      context.params.id,
       {
         ...productData,
         images: allImages,
@@ -72,11 +72,11 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
     await dbConnect()
-    await Product.findByIdAndDelete(params.id)
+    await Product.findByIdAndDelete(context.params.id)
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Error deleting product:', error)
@@ -89,16 +89,16 @@ export async function DELETE(
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
     await dbConnect()
     
     // Log the incoming ID for debugging
-    console.log('Requested product ID:', params.id)
+    console.log('Requested product ID:', context.params.id)
 
     // Validate MongoDB ObjectId
-    if (!mongoose.isValidObjectId(params.id)) {
+    if (!mongoose.isValidObjectId(context.params.id)) {
       console.log('Invalid ObjectId format')
       return NextResponse.json(
         { error: 'Invalid product ID format' },
@@ -107,7 +107,7 @@ export async function GET(
     }
 
     // Create a proper MongoDB ObjectId
-    const objectId = new mongoose.Types.ObjectId(params.id)
+    const objectId = new mongoose.Types.ObjectId(context.params.id)
     const product = await Product.findById(objectId)
 
     console.log('Found product:', product)
