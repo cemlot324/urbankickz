@@ -462,11 +462,45 @@ export default function Component() {
       </section>
 
       {/* Main Content */}
-      <main className="w-full flex-1 px-4 py-8">
+      <main className="w-full flex-1 px-2 md:px-4 py-4 md:py-8">
         <div className="max-w-[1400px] mx-auto">
-          <div className="grid gap-8 lg:grid-cols-[240px_1fr]">
-            {/* Sidebar Categories */}
-            <div className="space-y-4">
+          {/* Mobile Categories Horizontal Scroll */}
+          <div className="lg:hidden mb-4 overflow-x-auto scrollbar-hide">
+            <div className="flex space-x-2 min-w-max px-2">
+              <Button
+                variant="outline"
+                onClick={() => handleFilterChange('category', 'all')}
+                className="whitespace-nowrap h-10 px-4 rounded-lg border-2 border-[#B2D12E] font-bold uppercase tracking-wide hover:bg-[#B2D12E] hover:text-black transition-colors"
+              >
+                <Home className="h-4 w-4 mr-2" />
+                Home
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => handleFilterChange('category', 'new')}
+                className="whitespace-nowrap h-10 px-4 rounded-lg border-2 border-[#B2D12E] font-bold uppercase tracking-wide hover:bg-[#B2D12E] hover:text-black transition-colors"
+              >
+                <Zap className="h-4 w-4 mr-2" />
+                New In
+              </Button>
+              {["men", "women", "kids"].map((category) => (
+                <Button
+                  key={category}
+                  variant="outline"
+                  onClick={() => handleFilterChange('category', category)}
+                  className={`whitespace-nowrap h-10 px-4 rounded-lg border-2 border-[#B2D12E] font-bold uppercase tracking-wide hover:bg-[#B2D12E] hover:text-black transition-colors ${
+                    state.filters.category === category ? 'bg-[#B2D12E] text-black' : ''
+                  }`}
+                >
+                  {category.charAt(0).toUpperCase() + category.slice(1)}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid gap-4 md:gap-8 grid-cols-1 lg:grid-cols-[240px_1fr]">
+            {/* Desktop Sidebar - Hidden on Mobile */}
+            <div className="hidden lg:block space-y-4">
               <div className="space-y-3">
                 <Button
                   variant="outline"
@@ -499,15 +533,15 @@ export default function Component() {
               </div>
             </div>
 
-            {/* Products Grid */}
-            <div className="space-y-6">
-              {/* Filters */}
-              <div className="flex justify-center gap-8">
+            {/* Products Section */}
+            <div className="space-y-4">
+              {/* Filters - Stack on mobile */}
+              <div className="flex flex-col space-y-2 md:space-y-0 md:flex-row md:justify-center md:gap-4">
                 <Select 
                   value={state.filters.size} 
                   onValueChange={(value) => handleFilterChange('size', value)}
                 >
-                  <SelectTrigger className="w-[160px] rounded-lg border-2 border-[#B2D12E] focus:ring-[#B2D12E] focus:border-[#B2D12E]">
+                  <SelectTrigger className="w-full md:w-[160px] rounded-lg border-2 border-[#B2D12E]">
                     <SelectValue placeholder="Size" />
                   </SelectTrigger>
                   <SelectContent>
@@ -522,7 +556,7 @@ export default function Component() {
                   value={state.filters.color} 
                   onValueChange={(value) => handleFilterChange('color', value)}
                 >
-                  <SelectTrigger className="w-[160px] rounded-lg border-2 border-[#B2D12E] focus:ring-[#B2D12E] focus:border-[#B2D12E]">
+                  <SelectTrigger className="w-full md:w-[160px] rounded-lg border-2 border-[#B2D12E]">
                     <SelectValue placeholder="Color" />
                   </SelectTrigger>
                   <SelectContent>
@@ -537,7 +571,7 @@ export default function Component() {
                   value={state.filters.price} 
                   onValueChange={(value) => handleFilterChange('price', value)}
                 >
-                  <SelectTrigger className="w-[160px] rounded-lg border-2 border-[#B2D12E] focus:ring-[#B2D12E] focus:border-[#B2D12E]">
+                  <SelectTrigger className="w-full md:w-[160px] rounded-lg border-2 border-[#B2D12E]">
                     <div className="flex items-center gap-2">
                       <ArrowUpDown className="h-4 w-4" />
                       <SelectValue placeholder="Sort By" />
@@ -554,22 +588,21 @@ export default function Component() {
               </div>
 
               {/* Product Grid */}
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
                 {state.loading ? (
-                  <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    {[1, 2, 3, 4, 5, 6].map((i) => (
-                      <Card key={i} className="overflow-hidden border-0 shadow-lg animate-pulse">
-                        <CardContent className="p-0 relative">
-                          <div className="h-[300px] bg-gray-200 rounded-lg"></div>
-                          <div className="p-4 space-y-3">
-                            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-                            <div className="h-6 bg-gray-200 rounded w-1/4"></div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
+                  // Loading skeleton
+                  Array(6).fill(0).map((_, i) => (
+                    <Card key={i} className="overflow-hidden border-0 shadow-lg animate-pulse">
+                      <CardContent className="p-0">
+                        <div className="aspect-square bg-gray-200" />
+                        <div className="p-4 space-y-3">
+                          <div className="h-4 bg-gray-200 rounded w-3/4" />
+                          <div className="h-4 bg-gray-200 rounded w-1/2" />
+                          <div className="h-6 bg-gray-200 rounded w-1/4" />
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))
                 ) : filteredProducts.length === 0 ? (
                   <div className="col-span-full text-center py-10">
                     <p className="text-lg text-gray-500">No products found matching your filters.</p>
@@ -579,110 +612,108 @@ export default function Component() {
                     <Link 
                       href={`/product/${product._id}`} 
                       key={product._id}
-                      className="group block"
+                      className="group block relative"
                     >
-                      <Card className="overflow-hidden border-0 shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                        <CardContent className="p-0 relative">
-                          {/* Wishlist button */}
-                          <div className="absolute top-4 right-4 z-10">
-                            <Button 
-                              variant="ghost" 
-                              size="icon" 
-                              className="bg-white/80 backdrop-blur-sm hover:bg-white transition-all duration-300"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                handleWishlist({
-                                  id: product._id,
-                                  name: product.name,
-                                  price: product.price,
-                                  images: product.images
-                                });
-                              }}
-                            >
-                              {wishlistItems.includes(product._id) ? (
-                                <Heart className="h-5 w-5 text-[#B2D12E]" fill="currentColor" />
-                              ) : (
-                                <Heart className="h-5 w-5 text-gray-600 group-hover:text-[#B2D12E] transition-colors" />
-                              )}
-                            </Button>
-                          </div>
-                          
-                          {/* Quick view button */}
-                          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <Button 
-                              className="bg-white/90 text-black hover:bg-[#B2D12E] backdrop-blur-sm transition-all duration-300 shadow-lg"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                // Add quick view functionality here
-                              }}
-                            >
-                              Quick View
-                            </Button>
-                          </div>
+                      <Card className="overflow-hidden border-0 shadow-lg h-full">
+                        {/* Wishlist button */}
+                        <div className="absolute top-2 right-2 z-20">
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="bg-white/80 backdrop-blur-sm hover:bg-white transition-all duration-300"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleWishlist({
+                                id: product._id,
+                                name: product.name,
+                                price: product.price,
+                                images: product.images
+                              });
+                            }}
+                          >
+                            {wishlistItems.includes(product._id) ? (
+                              <Heart className="h-5 w-5 text-[#B2D12E]" fill="currentColor" />
+                            ) : (
+                              <Heart className="h-5 w-5 text-gray-600 group-hover:text-[#B2D12E] transition-colors" />
+                            )}
+                          </Button>
+                        </div>
+                        
+                        {/* Quick view button */}
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <Button 
+                            className="bg-white/90 text-black hover:bg-[#B2D12E] backdrop-blur-sm transition-all duration-300 shadow-lg"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              // Add quick view functionality here
+                            }}
+                          >
+                            Quick View
+                          </Button>
+                        </div>
 
-                          {/* Image container */}
-                          <div className="aspect-square overflow-hidden bg-gray-100">
-                            <Image
-                              src={product.images[0]}
-                              alt={product.name}
-                              width={400}
-                              height={400}
-                              className="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-500"
-                            />
-                          </div>
+                        {/* Image container */}
+                        <div className="aspect-square overflow-hidden bg-gray-100">
+                          <Image
+                            src={product.images[0]}
+                            alt={product.name}
+                            width={400}
+                            height={400}
+                            className="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-500"
+                          />
+                        </div>
 
-                          {/* Product info */}
-                          <div className="p-5 bg-white">
-                            <div className="flex justify-between items-start mb-2">
-                              <div>
-                                <h3 className="font-semibold text-lg leading-tight group-hover:text-[#B2D12E] transition-colors">
-                                  {product.name}
-                                </h3>
-                                <p className="text-sm text-gray-600 mt-1">{product.brand}</p>
-                              </div>
-                              <span className="font-bold text-xl">£{product.price}</span>
+                        {/* Product info */}
+                        <div className="p-5 bg-white">
+                          <div className="flex justify-between items-start mb-2">
+                            <div>
+                              <h3 className="font-semibold text-lg leading-tight group-hover:text-[#B2D12E] transition-colors">
+                                {product.name}
+                              </h3>
+                              <p className="text-sm text-gray-600 mt-1">{product.brand}</p>
                             </div>
+                            <span className="font-bold text-xl">£{product.price}</span>
+                          </div>
 
-                            {/* Available sizes */}
-                            <div className="mt-3">
-                              <p className="text-xs text-gray-500 mb-2">Available Sizes:</p>
-                              <div className="flex flex-wrap gap-1">
-                                {product.sizes.slice(0, 4).map((size) => (
-                                  <span 
-                                    key={size}
-                                    className="text-xs px-2 py-1 bg-gray-100 rounded-md"
-                                  >
-                                    {size}
-                                  </span>
-                                ))}
-                                {product.sizes.length > 4 && (
-                                  <span className="text-xs px-2 py-1 bg-gray-100 rounded-md">
-                                    +{product.sizes.length - 4}
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-
-                            {/* Colors */}
-                            <div className="mt-3 flex items-center gap-1">
-                              {product.colors.slice(0, 3).map((color) => (
-                                <span
-                                  key={color}
-                                  className="w-3 h-3 rounded-full border border-gray-300"
-                                  style={{ 
-                                    backgroundColor: color.toLowerCase(),
-                                    boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.1)'
-                                  }}
-                                />
+                          {/* Available sizes */}
+                          <div className="mt-3">
+                            <p className="text-xs text-gray-500 mb-2">Available Sizes:</p>
+                            <div className="flex flex-wrap gap-1">
+                              {product.sizes.slice(0, 4).map((size) => (
+                                <span 
+                                  key={size}
+                                  className="text-xs px-2 py-1 bg-gray-100 rounded-md"
+                                >
+                                  {size}
+                                </span>
                               ))}
-                              {product.colors.length > 3 && (
-                                <span className="text-xs text-gray-500">
-                                  +{product.colors.length - 3}
+                              {product.sizes.length > 4 && (
+                                <span className="text-xs px-2 py-1 bg-gray-100 rounded-md">
+                                  +{product.sizes.length - 4}
                                 </span>
                               )}
                             </div>
                           </div>
-                        </CardContent>
+
+                          {/* Colors */}
+                          <div className="mt-3 flex items-center gap-1">
+                            {product.colors.slice(0, 3).map((color) => (
+                              <span
+                                key={color}
+                                className="w-3 h-3 rounded-full border border-gray-300"
+                                style={{ 
+                                  backgroundColor: color.toLowerCase(),
+                                  boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.1)'
+                                }}
+                              />
+                            ))}
+                            {product.colors.length > 3 && (
+                              <span className="text-xs text-gray-500">
+                                +{product.colors.length - 3}
+                              </span>
+                            )}
+                          </div>
+                        </div>
                       </Card>
                     </Link>
                   ))

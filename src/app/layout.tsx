@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { ProductProvider } from '@/context/ProductContext'
-import { AuthProvider } from '@/context/AuthContext';
-import { CartProvider } from '@/context/CartContext';
 import { InstallPrompt } from '@/components/InstallPrompt'
+import { Providers } from '@/components/Providers'
 
 
 export const metadata: Metadata = {
@@ -21,20 +19,27 @@ export default function RootLayout({
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#B2D12E" />
-        <link rel="apple-touch-icon" href="/icon-192x192.png" />
+        
+        {/* iOS specific tags */}
+        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="Urban Kickz" />
+        
+        {/* Windows specific tags */}
+        <meta name="msapplication-TileColor" content="#B2D12E" />
+        <meta name="msapplication-tap-highlight" content="no" />
+        
+        {/* PWA viewport tags */}
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="mobile-web-app-capable" content="yes" />
       </head>
       <body>
-        <AuthProvider>
-          <ProductProvider>
-            <CartProvider>
-              {children}
-              <InstallPrompt />
-            </CartProvider>
-          </ProductProvider>
-        </AuthProvider>
+        <Providers>
+          {children}
+          <InstallPrompt />
+        </Providers>
       </body>
     </html>
   );
