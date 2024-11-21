@@ -13,11 +13,10 @@ const s3Client = new S3Client({
   },
 })
 
-
 export async function PUT(
-  request: NextRequest,
-  context: { params: { id: string } }
+  request: NextRequest
 ) {
+  const id = request.url.split('/').pop()
   try {
     await dbConnect()
     const formData = await request.formData()
@@ -51,7 +50,7 @@ export async function PUT(
     const allImages = [...existingImages, ...newImageUrls]
 
     const updatedProduct = await Product.findByIdAndUpdate(
-      context.params.id,
+      id,
       {
         ...productData,
         images: allImages,
@@ -71,12 +70,12 @@ export async function PUT(
 }
 
 export async function DELETE(
-  request: NextRequest,
-  context: { params: { id: string } }
+  request: NextRequest
 ) {
+  const id = request.url.split('/').pop()
   try {
     await dbConnect()
-    await Product.findByIdAndDelete(context.params.id)
+    await Product.findByIdAndDelete(id)
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Error deleting product:', error)
@@ -88,17 +87,17 @@ export async function DELETE(
 }
 
 export async function GET(
-  request: NextRequest,
-  context: { params: { id: string } }
+  request: NextRequest
 ) {
+  const id = request.url.split('/').pop()
+  
   try {
     await dbConnect()
     
-    // Log the incoming ID for debugging
-    console.log('Requested product ID:', context.params.id)
+    console.log('Requested product ID:', id)
 
     // Validate MongoDB ObjectId
-    if (!mongoose.isValidObjectId(context.params.id)) {
+    if (!mongoose.isValidObjectId(id)) {
       console.log('Invalid ObjectId format')
       return NextResponse.json(
         { error: 'Invalid product ID format' },
@@ -106,8 +105,7 @@ export async function GET(
       )
     }
 
-    // Create a proper MongoDB ObjectId
-    const objectId = new mongoose.Types.ObjectId(context.params.id)
+    const objectId = new mongoose.Types.ObjectId(id)
     const product = await Product.findById(objectId)
 
     console.log('Found product:', product)
