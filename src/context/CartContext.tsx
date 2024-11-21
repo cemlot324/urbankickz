@@ -3,6 +3,13 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 
+interface Product {
+  _id: string;
+  name: string;
+  price: number;
+  images: string[];
+}
+
 interface CartItem {
   _id: string;
   name: string;
@@ -14,7 +21,7 @@ interface CartItem {
 
 interface CartContextType {
   items: CartItem[];
-  addToCart: (product: any, size: string) => void;
+  addToCart: (product: Product, size: string) => void;
   removeFromCart: (productId: string, size: string) => void;
   updateQuantity: (productId: string, size: string, quantity: number) => void;
   clearCart: () => void;
@@ -40,7 +47,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('cart', JSON.stringify(items));
   }, [items]);
 
-  const addToCart = (product: any, size: string) => {
+  const addToCart = (product: Product, size: string) => {
     setItems(currentItems => {
       const existingItem = currentItems.find(
         item => item._id === product._id && item.size === size
