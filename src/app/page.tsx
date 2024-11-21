@@ -229,20 +229,20 @@ export default function Component() {
       {/* Navigation */}
       <header className="border-b w-full">
         <div className="max-w-[1400px] mx-auto flex h-16 items-center justify-between px-4">
-          <Link href="/">
+          <Link href="/" className="flex-shrink-0">
             <Image
               src="/logo7.png"
               alt="Urban Kickz Logo"
               width={120}
               height={80}
-              className="h-15 w-auto"
+              className="h-12 w-auto md:h-15"
             />
           </Link>
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 md:space-x-4">
             <Link href="/cart" className="relative">
-              <ShoppingCart className="h-6 w-6" />
+              <ShoppingCart className="h-5 w-5 md:h-6 md:w-6" />
               {totalItems > 0 && (
-                <span className="absolute -top-2 -right-2 bg-[#B2D12E] text-black text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 bg-[#B2D12E] text-black text-xs font-bold rounded-full h-4 w-4 md:h-5 md:w-5 flex items-center justify-center">
                   {totalItems}
                 </span>
               )}

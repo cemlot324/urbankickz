@@ -1,0 +1,21 @@
+{
+    "name": "Urban Kickz",
+    "short_name": "Urban Kickz",
+    "description": "Your premier destination for exclusive sneakers",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#B2D12E",
+    "icons": [
+      {
+        "src": "/icon-192x192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "/icon-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+  }
