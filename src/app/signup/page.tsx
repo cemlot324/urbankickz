@@ -17,8 +17,24 @@ export default function SignUpPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      await signup(name, email, password)
-      router.push('/profile')
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+          phoneNumber: '',
+        }),
+      });
+
+      if (response.ok) {
+        router.push('/profile')
+      } else {
+        setError('Failed to sign up')
+      }
     } catch (err: any) {
       setError(err.message || 'Failed to sign up')
     }

@@ -5,7 +5,6 @@ import clientPromise from "@/lib/mongodb"
 import bcrypt from "bcryptjs"
 import User from "@/models/User"
 import dbConnect from "@/lib/mongodb"
-import { NextResponse } from "next/server"
 
 export const authOptions = {
   adapter: MongoDBAdapter(clientPromise),
@@ -70,40 +69,3 @@ export const authOptions = {
 
 const handler = NextAuth(authOptions)
 export { handler as GET, handler as POST }
-
-export async function POST(request: Request) {
-  try {
-    const { name, email, password, phoneNumber } = await request.json()
-
-    await dbConnect()
-
-    // Check if user already exists
-    const existingUser = await User.findOne({ email })
-    if (existingUser) {
-      return NextResponse.json(
-        { error: "User already exists" },
-        { status: 400 }
-      )
-    }
-
-    // Create new user
-    const hashedPassword = await bcrypt.hash(password, 12)
-    const user = await User.create({
-      name,
-      email,
-      password: hashedPassword,
-      phoneNumber
-    })
-
-    return NextResponse.json(
-      { message: "User created successfully" },
-      { status: 201 }
-    )
-  } catch (error) {
-    console.error('Signup error:', error)
-    return NextResponse.json(
-      { error: "Error creating user" },
-      { status: 500 }
-    )
-  }
-}
