@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 import { v4 as uuidv4 } from 'uuid'
 import dbConnect from '@/lib/mongodb'
@@ -13,9 +13,15 @@ const s3Client = new S3Client({
   },
 })
 
+interface Params {
+  params: {
+    id: string
+  }
+}
+
 export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: Params
 ) {
   try {
     await dbConnect()
@@ -70,8 +76,8 @@ export async function PUT(
 }
 
 export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: Params
 ) {
   try {
     await dbConnect()
@@ -87,8 +93,8 @@ export async function DELETE(
 }
 
 export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: Params
 ) {
   try {
     await dbConnect()
