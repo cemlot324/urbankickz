@@ -1,10 +1,26 @@
 import { NextAuthOptions } from "next-auth"
+import { JWT } from "next-auth/jwt"
+import { Session } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { MongoDBAdapter } from "@auth/mongodb-adapter"
 import clientPromise from "@/lib/mongodb"
 import bcrypt from "bcryptjs"
 import User from "@/models/User"
 import dbConnect from "@/lib/mongodb"
+
+// Define custom session type
+interface CustomSession extends Session {
+  user: {
+    id: string;
+    email: string;
+    name?: string;
+  }
+}
+
+// Define custom token type
+interface CustomToken extends JWT {
+  id: string;
+}
 
 export const authOptions: NextAuthOptions = {
   adapter: MongoDBAdapter(clientPromise),
@@ -52,17 +68,17 @@ export const authOptions: NextAuthOptions = {
     signUp: '/signup',
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }): Promise<CustomToken> {
       if (user) {
         token.id = user.id
       }
-      return token
+      return token as CustomToken
     },
-    async session({ session, token }: { session: any; token: any }) {
+    async session({ session, token }): Promise<CustomSession> {
       if (session?.user) {
         session.user.id = token.id
       }
-      return session
+      return session as CustomSession
     }
   }
 }
