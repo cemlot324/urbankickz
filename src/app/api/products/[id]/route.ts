@@ -13,15 +13,10 @@ const s3Client = new S3Client({
   },
 })
 
-interface Params {
-  params: {
-    id: string
-  }
-}
 
 export async function PUT(
   request: NextRequest,
-  { params }: Params
+  { params }: { params: { id: string } }
 ) {
   try {
     await dbConnect()
@@ -77,7 +72,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: Params
+  { params }: { params: { id: string } }
 ) {
   try {
     await dbConnect()
@@ -94,7 +89,7 @@ export async function DELETE(
 
 export async function GET(
   request: NextRequest,
-  { params }: Params
+  { params }: { params: { id: string } }
 ) {
   try {
     await dbConnect()
