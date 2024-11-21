@@ -2,6 +2,8 @@
 
 import { createContext, useContext, useState, useEffect } from 'react';
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 interface AuthContextType {
   user: any;
   login: (email: string, password: string) => Promise<void>;
