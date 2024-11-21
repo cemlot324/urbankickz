@@ -2,6 +2,13 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Wishlist from '@/models/Wishlist';
 
+interface WishlistItem {
+  productId: string;
+  name: string;
+  price: number;
+  image: string;
+}
+
 export async function GET(req: Request) {
   try {
     await dbConnect();
@@ -45,7 +52,7 @@ export async function POST(req: Request) {
 
     // Check if item already exists
     const itemExists = wishlist.items.some(
-      (item: any) => item.productId === productId
+      (item: WishlistItem) => item.productId === productId
     );
 
     if (!itemExists) {
@@ -61,7 +68,7 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ success: true, wishlist });
-  } catch (error: any) {
+  } catch (error: Error) {
     console.error('POST Wishlist error:', {
       message: error.message,
       errors: error.errors,
@@ -87,7 +94,7 @@ export async function DELETE(req: Request) {
     
     if (wishlist) {
       wishlist.items = wishlist.items.filter(
-        (item: any) => item.productId !== productId
+        (item: WishlistItem) => item.productId !== productId
       );
       await wishlist.save();
     }

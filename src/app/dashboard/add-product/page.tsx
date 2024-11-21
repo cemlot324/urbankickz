@@ -54,14 +54,13 @@ export default function AddProductPage() {
 
     try {
       const formData = new FormData();
-      const form = e.currentTarget;
+      const form = e.currentTarget as HTMLFormElement;
       
-      // Prepare product data using selected state values
       const productData = {
-        name: form.name.value,
-        brand: form.brand.value,
-        description: form.description.value,
-        price: parseFloat(form.price.value),
+        name: (form.elements.namedItem('name') as HTMLInputElement).value,
+        brand: (form.elements.namedItem('brand') as HTMLInputElement).value,
+        description: (form.elements.namedItem('description') as HTMLTextAreaElement).value,
+        price: parseFloat((form.elements.namedItem('price') as HTMLInputElement).value),
         sizes: selectedSizes,
         colors: selectedColors,
         style: selectedStyle,         // Use selected style state

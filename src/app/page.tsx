@@ -1,6 +1,6 @@
 'use client'
 
-import { Heart, Search, ShoppingCart, User, Home, HeartFilled, Zap, ArrowUpDown } from 'lucide-react'
+import { Heart, ShoppingCart, User, Home, Zap, ArrowUpDown } from 'lucide-react'
 import Image from "next/image"
 import Link from "next/link"
 import { useState, useEffect } from "react"
@@ -27,9 +27,21 @@ import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 
+interface WishlistProduct {
+  id: string;
+  name: string;
+  price: number | string;
+  images?: string[];
+  image?: string;
+  index?: number;
+}
+
+interface WishlistItem {
+  productId: string;
+}
+
 export default function Component() {
   const { state, dispatch } = useProducts()
-  const [favorites, setFavorites] = useState<number[]>([])
   const { user, logout } = useAuth();
   const router = useRouter();
   const [wishlistItems, setWishlistItems] = useState<string[]>([]);
@@ -69,13 +81,13 @@ export default function Component() {
         },
       });
       const data = await response.json();
-      setWishlistItems(data.items.map((item: any) => item.productId));
+      setWishlistItems(data.items.map((item: WishlistItem) => item.productId));
     } catch (error) {
       console.error('Error fetching wishlist:', error);
     }
   };
 
-  const handleWishlist = async (product: any) => {
+  const handleWishlist = async (product: WishlistProduct) => {
     if (!user) {
       toast.error('Please sign in to add items to your wishlist');
       return;
@@ -134,9 +146,9 @@ export default function Component() {
         setWishlistItems([...wishlistItems, productData.productId]);
         toast.success('Added to wishlist');
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Wishlist error:', error);
-      toast.error(error.message || 'Failed to update wishlist');
+      toast.error(error instanceof Error ? error.message : 'Failed to update wishlist');
     }
   };
 
@@ -352,9 +364,9 @@ export default function Component() {
                     })}
                   >
                     {wishlistItems.includes(`featured-${index}`) ? (
-                      <HeartFilled className="h-6 w-6 text-[#B2D12E]" />
+                      <Heart className="h-6 w-6 text-[#B2D12E]" fill="currentColor" />
                     ) : (
-                      <Heart className="h-6 w-6 text-white" />
+                      <Heart className="h-6 w-6 text-white hover:text-[#B2D12E] transition-colors" />
                     )}
                   </Button>
                 </div>
@@ -579,13 +591,18 @@ export default function Component() {
                               className="bg-white/80 backdrop-blur-sm hover:bg-white transition-all duration-300"
                               onClick={(e) => {
                                 e.preventDefault();
-                                handleWishlist(product);
+                                handleWishlist({
+                                  id: product._id,
+                                  name: product.name,
+                                  price: product.price,
+                                  images: product.images
+                                });
                               }}
                             >
                               {wishlistItems.includes(product._id) ? (
-                                <HeartFilled className="h-5 w-5 text-red-500" />
+                                <Heart className="h-5 w-5 text-[#B2D12E]" fill="currentColor" />
                               ) : (
-                                <Heart className="h-5 w-5 text-gray-600 group-hover:text-red-500 transition-colors" />
+                                <Heart className="h-5 w-5 text-gray-600 group-hover:text-[#B2D12E] transition-colors" />
                               )}
                             </Button>
                           </div>

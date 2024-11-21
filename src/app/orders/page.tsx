@@ -5,7 +5,6 @@ import { useAuth } from '@/context/AuthContext';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, Package } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 
 // Helper function for date formatting
 const formatDate = (dateString: string) => {
@@ -43,7 +42,6 @@ interface Order {
 }
 
 export default function OrdersPage() {
-  const router = useRouter();
   const { user, isLoading: authLoading } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -122,7 +120,7 @@ export default function OrdersPage() {
           <div className="bg-white rounded-2xl shadow-md p-8 text-center">
             <Package className="w-12 h-12 mx-auto mb-4 text-gray-400" />
             <h2 className="text-xl font-semibold mb-2">No Orders Yet</h2>
-            <p className="text-gray-600 mb-4">You haven't placed any orders yet.</p>
+            <p className="text-gray-600 mb-4">You have not placed any orders yet.</p>
             <Link 
               href="/"
               className="text-[#B2D12E] hover:underline"

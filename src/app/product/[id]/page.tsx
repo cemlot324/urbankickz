@@ -4,14 +4,26 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Heart, ShoppingBag, ArrowLeft } from 'lucide-react';
+import { ShoppingBag, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/context/CartContext';
 import { toast } from 'react-hot-toast';
 
+interface Product {
+  id: string;
+  name: string;
+  brand: string;
+  price: number;
+  description: string;
+  images: string[];
+  sizes: string[];
+  style: string;
+  colors: string[];
+}
+
 export default function ProductPage() {
   const { id } = useParams();
-  const [product, setProduct] = useState<any>(null);
+  const [product, setProduct] = useState<Product | null>(null);
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -32,9 +44,9 @@ export default function ProductPage() {
         }
 
         setProduct(data);
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error('Error fetching product:', error);
-        setError(error.message || 'Failed to fetch product');
+        setError(error instanceof Error ? error.message : 'Failed to fetch product');
       } finally {
         setIsLoading(false);
       }

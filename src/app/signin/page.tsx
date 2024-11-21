@@ -18,8 +18,8 @@ export default function SignInPage() {
     try {
       await login(email, password)
       router.push('/profile')
-    } catch (err: any) {
-      setError(err.message || 'Failed to sign in')
+    } catch (err: Error | unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to sign in')
     }
   }
 
@@ -92,7 +92,7 @@ export default function SignInPage() {
 
             <div className="mt-6 text-center">
               <p className="text-gray-600">
-                Don't have an account?{' '}
+                Need an account?{' '}
                 <Link href="/signup" className="text-[#B2D12E] hover:underline font-semibold">
                   Sign Up
                 </Link>

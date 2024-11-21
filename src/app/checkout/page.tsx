@@ -1,9 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState} from 'react';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
-import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { toast } from 'react-hot-toast';
@@ -22,8 +21,7 @@ interface ShippingDetails {
 }
 
 export default function CheckoutPage() {
-  const router = useRouter();
-  const { user, isLoading: authLoading } = useAuth();
+  const { user } = useAuth();
   const { items, totalPrice, clearCart } = useCart();
   const [currentStep, setCurrentStep] = useState<CheckoutStep>('shipping');
   const [isProcessing, setIsProcessing] = useState(false);

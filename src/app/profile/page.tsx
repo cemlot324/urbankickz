@@ -10,8 +10,6 @@ import {
   ShoppingBag, 
   Heart, 
   Settings, 
-  LogOut,
-  Clock,
   MapPin,
   Trash2,
   Package

@@ -64,15 +64,15 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
       
       // Prepare product data
       const productData = {
-        name: form.name.value,
-        brand: form.brand.value,
-        description: form.description.value,
-        price: parseFloat(form.price.value),
-        sizes: form.sizes.value.split(',').map(size => size.trim()),
-        colors: form.colors.value.split(',').map(color => color.trim()),
-        style: form.style.value,
-        category: form.category.value,
-        existingImages: existingImages, // Include existing images
+        name: (form.elements.namedItem('name') as HTMLInputElement).value,
+        brand: (form.elements.namedItem('brand') as HTMLInputElement).value,
+        description: (form.elements.namedItem('description') as HTMLTextAreaElement).value,
+        price: parseFloat((form.elements.namedItem('price') as HTMLInputElement).value),
+        sizes: (form.elements.namedItem('sizes') as HTMLInputElement).value.split(',').map(size => size.trim()),
+        colors: (form.elements.namedItem('colors') as HTMLInputElement).value.split(',').map(color => color.trim()),
+        style: (form.elements.namedItem('style') as HTMLInputElement).value,
+        category: (form.elements.namedItem('category') as HTMLSelectElement).value,
+        existingImages: existingImages,
       };
 
       // Add product data to FormData

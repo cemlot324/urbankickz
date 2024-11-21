@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useAuth } from '@/context/AuthContext'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -11,7 +10,6 @@ export default function SignUpPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const { signup } = useAuth()
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -35,8 +33,8 @@ export default function SignUpPage() {
       } else {
         setError('Failed to sign up')
       }
-    } catch (err: any) {
-      setError(err.message || 'Failed to sign up')
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to sign up')
     }
   }
 
