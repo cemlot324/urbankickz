@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server"
-import bcrypt from "bcryptjs"
 import User from "@/models/User"
 import dbConnect from "@/lib/mongodb"
 
 export async function POST(request: Request) {
   try {
     const { name, email, password, phoneNumber } = await request.json()
+    console.log('Register API - password length:', password.length) // Should be 8 for test1234
 
     await dbConnect()
 
@@ -18,12 +18,11 @@ export async function POST(request: Request) {
       )
     }
 
-    // Create new user
-    const hashedPassword = await bcrypt.hash(password, 12)
+    // Create new user with raw password
     const user = await User.create({
       name,
       email,
-      password: hashedPassword,
+      password,  // Pass raw password, let pre-save hook handle hashing
       phoneNumber
     })
 

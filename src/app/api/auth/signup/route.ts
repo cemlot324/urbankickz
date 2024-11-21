@@ -1,16 +1,15 @@
 import { NextResponse } from "next/server"
-import bcrypt from "bcryptjs"
 import dbConnect from "@/lib/mongodb"
 import User from "@/models/User"
-import jwt from 'jsonwebtoken'
 
 export async function POST(request: Request) {
   try {
-    const { name, email, password } = await request.json()
-
+    const { name, email, password, phoneNumber } = await request.json()
+    console.log('Signup - Raw password length:', password.length)
+    
     await dbConnect()
 
-    // Check if user already exists
+    // Check if user exists
     const existingUser = await User.findOne({ email })
     if (existingUser) {
       return NextResponse.json(
@@ -19,31 +18,18 @@ export async function POST(request: Request) {
       )
     }
 
-    // Create new user
-    const hashedPassword = await bcrypt.hash(password, 12)
+    // Create user with raw password
     const user = await User.create({
       name,
       email,
-      password: hashedPassword,
+      password,  // Raw password
+      phoneNumber
     })
 
-    // Create token
-    const token = jwt.sign(
-      { userId: user._id },
-      process.env.JWT_SECRET || 'your-secret-key',
-      { expiresIn: '30d' }
-    )
+    console.log('User created with password length:', user.password.length)
 
     return NextResponse.json(
-      {
-        success: true,
-        token,
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-        },
-      },
+      { message: "User created successfully", userId: user._id },
       { status: 201 }
     )
   } catch (error) {

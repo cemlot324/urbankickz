@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import User from '@/models/User';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 
 export async function POST(req: Request) {
   try {
@@ -9,9 +10,7 @@ export async function POST(req: Request) {
     
     const { email, password } = await req.json();
 
-    // Find user and include password for comparison
     const user = await User.findOne({ email }).select('+password');
-    
     if (!user) {
       return NextResponse.json(
         { error: 'Invalid credentials' },
@@ -19,8 +18,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Check password
-    const isMatch = await user.matchPassword(password);
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return NextResponse.json(
         { error: 'Invalid credentials' },
@@ -28,7 +26,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // Create token
     const token = jwt.sign(
       { userId: user._id },
       process.env.JWT_SECRET || 'your-secret-key',
